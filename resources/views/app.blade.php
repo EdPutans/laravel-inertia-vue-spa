@@ -13,7 +13,7 @@
         <link rel="icon" href="{{ $page['props']['favicon'] }}" type="image/x-icon">
         
         <!-- Scripts -->
-        @routes
+        <!-- @routes -->
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
     </head>
