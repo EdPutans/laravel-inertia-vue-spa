@@ -23,12 +23,24 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  setHoveredOverCategory: {
+    type: Function,
+    required: true,
+  },
+  hoveredOverCategory: {
+    type: Object,
+    required: false,
+  },
 });
 
 const categoriesAsArray = Object.values(props.categories)
 
-const getButtonHighlight = (category) => {
-  return props.selectedCategory.name === category.name ? 'btn-primary' : 'btn-transparent'
+const getButtonHighlightClassName = (category) => {
+  // FIXME: category.identifiers's aren't unique for some reason?
+  if (props.selectedCategory?.name === category.name) return 'btn-primary';
+  if (props.hoveredOverCategory?.name === category.name) return 'btn-transparent text-primary';
+
+  return 'btn-transparent'
 }
 
 </script>
@@ -39,7 +51,7 @@ const getButtonHighlight = (category) => {
     <div style="max-height: 500px; overflow: auto;">
       <div class="btn-group-vertical" style="display: block;" role="group">
         <button v-bind:key="category.name" v-for="category in categoriesAsArray" type="button"
-          class="btn text-start rounded" :class="getButtonHighlight(category)"
+          class="btn text-start rounded category-button" :class="getButtonHighlightClassName(category)"
           v-on:click="() => $props.setSelectedCategory(category)">
           {{ category.name }}
         </button>

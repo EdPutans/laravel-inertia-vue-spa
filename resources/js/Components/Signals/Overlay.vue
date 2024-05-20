@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import { ref } from 'vue';
 import Categories from './Categories.vue';
-import Explainer from './Explainer.vue';
 import SignalCustomisation from './SignalCustomisation.vue';
+import SignalExplainer from './SignalExplainer.vue';
 import SignalSelection from './SignalSelection.vue';
 
 const sampleCats = {
@@ -1042,23 +1042,27 @@ defineProps({
   onClose: Function,
 });
 
-const selectedCategory = ref({ name: 'Foo' });
+
 const categories = ref(sampleCats);
+const selectedCategory = ref(categories.value['App\\Signals\\Guests\\GuestSignalCategory']);
 
 const hoveredOverSignal = ref(undefined);
-
+const hoveredOverCategory = ref(undefined);
 const selectedSignal = ref(undefined);
-
 
 const appliedCustomisations = ref();
 
 const setHoveredOverSignal = (signal) => {
   hoveredOverSignal.value = signal;
 };
+const setHoveredCategorySignal = (category) => {
+  hoveredOverCategory.value = category;
+};
 const setSelectedSignal = (signal) => {
   hoveredOverSignal.value = signal;
   selectedSignal.value = signal;
 };
+
 const resetSelectedSignal = () => {
   selectedSignal.value = undefined;
   hoveredOverSignal.value = undefined;
@@ -1071,8 +1075,15 @@ const setSelectedCategory = (category) => {
 
 const open = ref(true);
 
+const getExplainerValue = () => {
+  if (hoveredOverSignal.value) return hoveredOverSignal.value;
+  if (selectedSignal.value) return selectedSignal.value;
+
+  return undefined;
+};
+const shouldShowExplainer = () => !!getExplainerValue();
+
 function toggle() {
-  console.log('toggle')
   open.value = !open.value
 }
 </script>
@@ -1084,10 +1095,7 @@ function toggle() {
       <div class="modal-content">
         <div class="modal-header d-flex justify-content-between" style="border-bottom: none;">
           <div class="d-flex align-items-center ">
-            <button v-if="selectedSignal" v-on:click="resetSelectedSignal" class="btn btn-transparent p-0 modal-title">
-              <h5 class="modal-title">← &nbsp; Configure Signal</h5>
-            </button>
-            <h5 v-else class="modal-title">Configure Signal</h5>
+            <h5 class="modal-title">Configure Signal</h5>
           </div>
           <button type="button" class="close bg-white border-0" aria-label="Close" :on-click="toggle">
             <span aria-hidden="true">&times;</span>
@@ -1098,7 +1106,8 @@ function toggle() {
             <div class="row">
               <div class="col border-top-0 border-left-0 border-bottom-0">
                 <Categories v-if="!selectedSignal" :selectedCategory="selectedCategory" :categories="categories"
-                  :setSelectedCategory="setSelectedCategory" />
+                  :setSelectedCategory="setSelectedCategory" :hoveredOverCategory="hoveredOverCategory"
+                  :setHoveredCategorySignal="setHoveredCategorySignal" />
 
                 <div v-else>
                   <SignalSelection :selectedCategory="selectedCategory" :hoveredOverSignal="hoveredOverSignal"
@@ -1115,8 +1124,7 @@ function toggle() {
                   :appliedCustomisations="appliedCustomisations" />
               </div>
               <div class="col">
-                <Explainer :hoveredOverSignal="hoveredOverSignal" />
-                <!-- <SignalCustomisation :hoveredOverSignal="hoveredOverSignal" /> -->
+                <SignalExplainer v-if="shouldShowExplainer()" :signal="getExplainerValue()" />
               </div>
             </div>
           </div>
