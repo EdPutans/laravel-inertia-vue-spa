@@ -1,3 +1,9 @@
+#### @ED!!
+3 console windows:
+```bash
+| yarn && yarn dev | ./vendor/bin/sail up | php artisan serve |
+```
+
 ## Laravel 10 + Inertia.js + Vue.js 3 + Jetstream -> single page application
 
 <div style="display: flex;">
